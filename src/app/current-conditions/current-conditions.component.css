@@ -1,0 +1,30 @@
+.close {
+  cursor: pointer;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+div.hey {
+  display: inline-block;
+
+  margin: 6px;
+  background-color: #DCDCDC;
+}
+
+.nav-tabs > li.active {
+  border: 1px solid #2b15aa !important;
+  width: 30;
+  margin-left: 2;
+  margin-right: 2;
+}
+
+ 
+.nav-tabs > li {
+  border: 1px solid #2b15aa !important;
+  float: left;
+  margin-bottom: -1px;
+  width: 300px;
+}
