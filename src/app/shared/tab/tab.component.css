@@ -1,0 +1,10 @@
+.inactive {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #000;
+}

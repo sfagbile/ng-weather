@@ -1,42 +1,47 @@
-import { Injectable, Signal, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { CurrentConditions } from './current-conditions/current-conditions.type';
-import { ConditionsAndZip } from './conditions-and-zip.type';
-import { Forecast } from './forecasts-list/forecast.type';
+import { CurrentConditions } from '../current-conditions/current-conditions.type';
+import { ConditionsAndZip } from '../shared/conditions-and-zip.type';
+import { Forecast } from '../forecasts-list/forecast.type';
 import { map } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { selectWeatherConditions } from './state-management/weather/weather.selectors';
-import * as WeatherActions from './state-management/weather/weather.actions';
+import { selectWeatherConditions } from '../shared/state-management/weather/weather.selectors';
+import * as WeatherActions from '../shared/state-management/weather/weather.actions';
+import { environment } from 'environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WeatherService {
 
-  static URL = 'http://api.openweathermap.org/data/2.5';
-  static APPID = '5a4b2d457ecbef9eb2a71e480b947604';
-  static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
+  static URL = environment.URL; 
+  static APPID = environment.APP_ID;
+  static ICON_URL = environment.ICON_URL;
+
   constructor(private http: HttpClient, private store: Store) { }
 
-
+  // Select weather conditions from the store as an observable
   weatherConditions$ = this.store.select(selectWeatherConditions);
 
+  // Add current conditions for a given zipcode using the OpenWeatherMap API
   addCurrentConditions(zipcode: string): Observable<ConditionsAndZip> {
-      return this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
-      .pipe(map(data => { return { zip: zipcode, data, iconUrl: this.getWeatherIcon(zipcode), } }));
+    return this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
+      .pipe(map(data => { return { zip: zipcode, data, iconurl: this.getWeatherIcon(data.weather[0].id), } }));
   }
 
+  // Remove current conditions for a given zipcode using the NgRx store
   removeCurrentConditions(zipcode: string) {
-    this.store.dispatch(WeatherActions.removeWeatherConditions({ zipcode }));
+    this.store.dispatch(WeatherActions.removeCurrentConditionAction({ zipcode }));
   }
 
   getWeatherConditions(): Observable<ConditionsAndZip[]> {
     return this.store.pipe(select(selectWeatherConditions));
   }
 
+  // Get the 5-day weather forecast for a given zipcode using the OpenWeatherMap API
   getForecast(zipcode: string): Observable<Forecast> {
-      return this.http.get<Forecast>(`${WeatherService.URL}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${WeatherService.APPID}`).pipe(
+    return this.http.get<Forecast>(`${WeatherService.URL}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${WeatherService.APPID}`).pipe(
       map(response => {
         const list = response.list.map((item) => {
           item.weatherIcon = this.getWeatherIcon(item.weather[0].id)

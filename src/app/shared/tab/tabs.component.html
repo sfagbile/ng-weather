@@ -1,0 +1,9 @@
+<div>
+  <div class="tab-titles">
+    <div *ngFor="let tab of tabs" (click)="selectTab(tab)" [class.active]="tab.active">
+      {{ tab.title }}
+      <span class="close" (click)="emitCloseEvent(tab.id)">&times;</span>
+    </div>
+  </div>
+  <ng-content></ng-content>
+</div>

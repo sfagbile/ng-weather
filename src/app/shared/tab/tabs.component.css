@@ -1,24 +1,38 @@
-.tab-titles {
+  .tab-titles {
     display: flex;
     cursor: pointer;
   }
-  .tab-titles > div {
+
+  .tab-container {
+    border: 1px solid #ccc;
+  }
+
+  .tab-titles>div {
     padding: 8px;
     margin-right: 8px;
-    border: 1px solid #ccc;
     border-bottom: none;
     border-radius: 4px 4px 0 0;
     background-color: #3279B7;
-    font-weight: 500;
     color: white;
   }
-  .tab-titles > div.active {
-    background-color: #fff;
+
+  .tab-titles>div.active {
     border-bottom: 1px solid #ccc;
     position: relative;
     bottom: -1px;
     background-color: #3279B7;
-    font-weight: 500;
-    color: white;
-  }
   
+  }
+
+  .close {
+    cursor: pointer;
+  }
+
+  span {
+    margin-left: 10px;
+    color: white;
+    margin-top: 0px;
+    opacity: 1;
+    padding: 0;
+    font-weight: 1;
+  }

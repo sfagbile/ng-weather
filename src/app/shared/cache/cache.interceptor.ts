@@ -9,35 +9,34 @@ import { environment } from 'environments/environment';
 export class CacheInterceptor implements HttpInterceptor {
     constructor(private cache: CacheService) { }
 
-    intercept(
-        request: HttpRequest<string>,
-        next: HttpHandler
-    ): Observable<HttpEvent<any>> {
-        if (request.method !== 'GET') {
-            return next.handle(request);
-        }
+    intercept(request: HttpRequest<string>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-        console.log(request.url);
+        // Check if the request method is not GET, if so, proceed without caching
+        if (request.method !== 'GET') { return next.handle(request); }
+
+        // Attempt to retrieve cached data based on the request URL
         const cachedData = this.cache.get(request.url);
-        console.log(cachedData);
 
         if (cachedData) {
             // Check if the cached data has not expired
-            const cacheTimestamp = this.cache.getTimestamp(request.url);
+            const cacheTimestamp = this.cache.get(request.url + "ttl");
             const currentTime = Date.now();
 
             const ttl = environment.CACHE_TTL;
+
+            // If data is still valid, return the cached response
             if (currentTime - cacheTimestamp <= ttl) {
                 return of(new HttpResponse({ body: cachedData }));
             }
         }
 
+        // If no cached data or expired, proceed with the request
         return next.handle(request).pipe(
             tap(event => {
+                // If the response is an HttpResponse, cache the data and store the timestamp
                 if (event instanceof HttpResponse) {
                     this.cache.set(request.url, event.body);
-                    // Store the timestamp
-                    this.cache.setTimestamp(request.url, Date.now());
+                    this.cache.set(request.url + "ttl", Date.now());
                 }
             })
         );

@@ -13,12 +13,12 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { WeatherEffects } from './state-management/weather/weather.effects';
-import { weatherReducer } from './state-management/weather/weather.reducer';
+import { WeatherEffects } from './shared/state-management/weather/weather.effects';
+import { weatherReducer } from './shared/state-management/weather/weather.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { CacheInterceptor } from './cache.interceptor';
-import { TabsComponent } from './app-tab/tabs.component';
-import { TabComponent } from './app-tab/tab.component';
+import { CacheInterceptor } from './shared/cache/cache.interceptor';
+import { TabsComponent } from './shared/tab/tabs.component';
+import { TabComponent } from './shared/tab/tab.component';
 
 @NgModule({
   declarations: [
