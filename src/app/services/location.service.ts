@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 import { selectWeatherConditions } from '../shared/state-management/weather/weather.selectors';
 import { ConditionsAndZip } from '../shared/conditions-and-zip.type';
 import * as WeatherActions from '../shared/state-management/weather/weather.actions';
-import { Subscription } from 'rxjs';
 
 export const LOCATIONS : string = "locations";
 
